@@ -1,171 +1,34 @@
-# Panduan Hosting SIAKAD (Laravel) – Dapat Link Langsung
+# Panduan Hosting SIAKAD (Laravel)
 
 **Repo GitHub:** [https://github.com/Renoslendra/MySiakad-AI](https://github.com/Renoslendra/MySiakad-AI)
 
-Proyek ini siap deploy. **Setup sekali**, lalu **setiap push ke `main` = hosting jalan otomatis**. Link web Anda tetap sama.
+Proyek ini siap deploy untuk berbagai environment (Shared Hosting, VPS, atau Cloud). 
 
----
+## Persyaratan Produksi
+- **PHP**: 8.3+
+- **Database**: MySQL atau PostgreSQL
+- **Node.js**: Untuk build asset via Vite
+- **Web Server**: Apache atau Nginx
 
-## Hosting 100% gratis (untuk lihat hasil – tidak perlu bayar)
-
-Keduanya **tidak perlu kartu kredit** untuk mulai. Cukup untuk cek hasil aplikasi jalan atau tidak.
-
-| Platform | Gratis? | Catatan singkat |
-|----------|--------|------------------|
-| **Render** | ✅ Gratis | Web service + PostgreSQL free. Service **tidur** setelah ~15 menit tidak dipakai (bangun lagi saat dibuka, ±1 menit). Database free terbatas (cukup untuk uji). Pilih plan **Free** saat buat service. [Info resmi](https://render.com/free) |
-| **Railway** | ✅ Kredit gratis | Sekitar **$5 kredit** gratis (cukup untuk beberapa minggu uji). Setelah habis bisa pakai plan berbayar atau pindah ke Render. [Free trial](https://docs.railway.app/reference/pricing/free-trial) |
-
-**Rekomendasi untuk “cuma mau lihat hasil”:** Pakai **Render** → pilih **Free** → dapat link web. Tidak bayar, tidak perlu kartu kredit.
-
----
-
-## Alur otomatis: Push ke main → Hosting jalan sendiri
-
-```
-Anda push ke branch main di MySiakad-AI
-        ↓
-GitHub Actions / Railway / Render mendeteksi push
-        ↓
-Build & deploy otomatis
-        ↓
-Aplikasi live di link web Anda (termasuk fitur AI Academic Advisor)
-```
-
-- **Tanpa GitHub Actions (paling simpel):** Connect repo **MySiakad-AI** di Railway atau Render sekali. Setelah itu, **setiap push ke `main`** akan otomatis di-deploy oleh platform (Railway/Render). Tidak perlu isi secrets di GitHub.
-- **Dengan GitHub Actions:** Jika Anda isi secrets di repo GitHub, workflow akan ikut menjalankan deploy setiap push ke `main` (berguna untuk Render deploy hook atau deploy via Railway CLI).
-
----
-
-## Deploy otomatis (setelah setup sekali)
-
-Workflow **Deploy SIAKAD** di folder `.github/workflows/` akan jalan setiap push ke `main` **jika** Anda sudah menambah secrets:
-
-- **Railway**: Setelah langkah 1–7 di bawah selesai (connect repo, MySQL, Variables, Generate Domain), tambah secrets di repo [MySiakad-AI](https://github.com/Renoslendra/MySiakad-AI):
-  - **Settings** → **Secrets and variables** → **Actions** → **New repository secret**
-  - `RAILWAY_TOKEN`: Railway → Project → **Settings** → **Tokens** → **Create Token** (Project Token)
-  - `RAILWAY_SERVICE_ID`: Railway → service **siakad** (bukan MySQL) → **Settings** → **General** → copy **Service ID** (UUID)
-  - Setelah itu: **push ke `main`** = GitHub Actions + Railway deploy otomatis. Link = domain yang Anda generate.
-
-- **Render**: Setelah deploy pertama (Blueprint), dapatkan **Deploy Hook**:
-  - Render → service **siakad** → **Settings** → **Deploy Hook** → copy URL
-  - Di repo MySiakad-AI → **Settings** → **Secrets** → tambah `RENDER_DEPLOY_HOOK_URL` = URL tadi
-  - **Push ke `main`** = workflow memicu deploy di Render. Link = URL service di dashboard Render.
-
----
-
-## Opsi 1: Railway (Cepat – ada kredit gratis)
-
-Railway memberi **kredit gratis** untuk mulai (tanpa kartu kredit). Mendeteksi Dockerfile dan memberi link domain otomatis. Setelah kredit habis, bisa upgrade atau pindah ke Render free.
-
-### Langkah
-
-1. **Push kode ke GitHub**  
-   Pastikan repo **[MySiakad-AI](https://github.com/Renoslendra/MySiakad-AI)** sudah berisi kode terbaru (branch `main`).
-
-2. **Buka [railway.app](https://railway.app)** → Login (bisa pakai GitHub).
-
-3. **New Project** → **Deploy from GitHub repo** → pilih repo **MySiakad-AI** (`Renoslendra/MySiakad-AI`) → branch **main**.
-
-4. **Tambah database MySQL**  
-   - Di project yang sama: **+ New** → **Database** → **Add MySQL**.  
-   - Setelah jadi, buka service MySQL → tab **Variables** → copy **`MYSQL_URL`** atau **`DATABASE_URL`** (kalau ada).
-
-5. **Atur variabel environment**  
-   Buka service **siakad** (bukan MySQL) → **Variables** → **Raw Editor**, lalu isi (sesuaikan nilai):
-
-   ```env
-   APP_NAME=SIAKAD
-   APP_ENV=production
-   APP_KEY=base64:XXXXX
-   APP_DEBUG=false
-   APP_URL=https://NAMA-SERVICE-ANDA.up.railway.app
-   APP_LOCALE=id
-   LOG_CHANNEL=stderr
-   LOG_STDERR_FORMATTER=\Monolog\Formatter\JsonFormatter
-
-   DB_CONNECTION=mysql
-   DB_HOST=...
-   DB_PORT=3306
-   DB_DATABASE=railway
-   DB_USERNAME=root
-   DB_PASSWORD=...
-
-   SESSION_DRIVER=database
-   CACHE_STORE=database
-   QUEUE_CONNECTION=database
+## Langkah Dasar Deploy
+1. **Clone Repository**: `git clone https://github.com/Renoslendra/MySiakad-AI.git`
+2. **Setup Env**: Copy `.env.example` ke `.env` dan sesuaikan konfigurasinya (Database, App URL, dll).
+3. **Install Dependencies**:
+   ```bash
+   composer install --optimize-autoloader --no-dev
+   npm install && npm run build
+   ```
+4. **Setup Database**:
+   ```bash
+   php artisan migrate --force
+   php artisan db:seed --force
+   ```
+5. **Optimize**:
+   ```bash
+   php artisan config:cache
+   php artisan route:cache
+   php artisan view:cache
    ```
 
-   - **APP_KEY**: jalankan di komputer Anda:  
-     `php artisan key:generate --show`  
-     Copy hasilnya ke `APP_KEY`.
-   - **APP_URL**: isi **setelah** Anda generate domain (langkah 6). Kalau belum, isi dulu `http://localhost`, nanti diganti.
-   - **DB_***: ambil dari service MySQL (Variables). Kalau Railway kasih **MYSQL_URL** satu string, biasanya bisa dipakai dengan memecah jadi `DB_HOST`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE` dari URL itu.
-
-6. **Generate domain (dapat link)**  
-   - Di service **siakad** → **Settings** → **Networking** → **Generate Domain**.  
-   - Copy URL yang muncul (mis. `https://siakad-production.up.railway.app`).  
-   - Kembali ke **Variables** → ubah **APP_URL** ke URL tadi → **Redeploy** (Deployments → ⋮ → Redeploy).
-
-7. **Tunggu deploy selesai**  
-   Setelah status hijau, buka link dari langkah 6. Itu **link web** SIAKAD Anda.
-
 ---
-
-## Opsi 2: Render (Gratis – tidak perlu bayar)
-
-Render punya **free tier**: web service + database PostgreSQL **gratis**, tidak perlu kartu kredit. Cocok untuk lihat hasil. Service akan tidur setelah ~15 menit tidak dipakai (saat dibuka lagi butuh ±1 menit untuk bangun). Pilih plan **Free** saat apply Blueprint / buat service.
-
-Render pakai **PostgreSQL** (bukan MySQL). Semua sudah diatur di `render.yaml`.
-
-**Langkah otomatis (satu halaman):** Buka file **[RENDER_DEPLOY.html](RENDER_DEPLOY.html)** di repo ini, lalu ikuti link dan langkah di sana. Atau buka langsung: **[dashboard.render.com/select-repo?type=blueprint](https://dashboard.render.com/select-repo?type=blueprint)** → pilih Workspace → Connect repo **MySiakad-AI** → Apply. **Pastikan pilih instance type Free** (jangan Paid).
-
-### Jika muncul error: "You must specify a workspaceId to create a project"
-
-Anda harus **memilih Workspace** dulu sebelum membuat project/Blueprint:
-
-1. Buka **[dashboard.render.com](https://dashboard.render.com)**.
-2. Di **sidebar kiri** atau **atas**, cari **Workspace** (dropdown atau "Switch workspace").
-3. Pilih workspace yang ada (mis. **Personal**) atau **Create new workspace** → beri nama (mis. "My Workspace") → pilih.
-4. Setelah itu: **New** → **Blueprint** → Connect repository **MySiakad-AI** → **Apply**.
-
-### Langkah deploy
-
-1. **Push kode ke GitHub** ke repo [MySiakad-AI](https://github.com/Renoslendra/MySiakad-AI) (pastikan ada `render.yaml`).
-
-2. **Buka [render.com](https://render.com)** → Login (bisa GitHub).
-
-3. **Pilih Workspace** dulu (lihat di atas). Lalu **New** → **Blueprint** → Connect repository **MySiakad-AI** (`Renoslendra/MySiakad-AI`) → **Apply**.
-
-4. Render akan membuat:
-   - Web service **siakad** (dari Dockerfile),
-   - Database PostgreSQL **siakad-db**,
-   - Variabel seperti `APP_KEY`, `APP_URL`, `DB_URL` (dari blueprint).
-
-5. Setelah deploy selesai, **link web** ada di dashboard service **siakad** (mis. `https://siakad.onrender.com`).
-
-6. **(Opsional)** Tambah variabel lain (Mayar, OpenRouter, dll.) di **Environment** service **siakad**.
-
----
-
-## Setelah Dapat Link
-
-- **APP_URL** harus persis sama dengan link yang dipakai user (termasuk `https://`).
-- Kalau pakai fitur bayar (Mayar), isi **MAYAR_*** di Variables.
-- Kalau pakai AI (OpenRouter/Gemini), isi **OPENROUTER_API_KEY** / **GEMINI_API_KEY** di Variables.
-
----
-
-## Troubleshooting Singkat
-
-| Masalah | Cek |
-|--------|-----|
-| 500 / blank page | `APP_KEY` sudah di-set? `APP_DEBUG=false` (jangan `true` di production). Lihat log di dashboard. |
-| CSS/JS tidak load | `APP_URL` harus sama dengan link browser (https://...). Lalu redeploy. |
-| Database error | Pastikan `DB_*` (atau `DB_URL` di Render) benar dan database sudah jalan. |
-| Build gagal | Pastikan `package-lock.json` ada dan ikut di repo. |
-
-Dengan salah satu opsi di atas, Anda cukup **push ke GitHub** dan ikuti langkahnya; hasilnya berupa **link web** yang bisa dibuka langsung.
-
----
-
-**Ringkasan otomatis:** Repo = **MySiakad-AI**. Setup sekali (connect repo + database + variables + generate domain) → dapat link web. Setelah itu **setiap push ke `main`** = deploy otomatis (oleh Railway/Render atau GitHub Actions). Link web tetap; fitur **AI Academic Advisor** (Gemini) jalan di hosting asal variabel `GEMINI_API_KEY` atau `OPENROUTER_API_KEY` sudah di-set di environment.
+**Catatan:** Pastikan variabel AI seperti `GEMINI_API_KEY` atau `OPENROUTER_API_KEY` dikonfigurasi di environment production untuk fitur Academic Advisor.
