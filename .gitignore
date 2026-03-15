@@ -28,9 +28,8 @@ Thumbs.db
 /*.sqlite-journal
 /*.sql
 
-# IDEs
-.vscode/
-.idea/
-.zed/
-.fleet/
-.nova/
+# IDE and temporary files
+_ide_helper.php
+_ide_helper_models.php
+.phpstorm.meta.php
+composer.phar

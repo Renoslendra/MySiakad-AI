@@ -42,20 +42,16 @@ class TagihanController extends Controller
         $activeTA = TahunAkademik::where('is_active', true)->first();
 
         // Find or create unpaid tagihan for active semester
-        $tagihan = TagihanUkt::firstOrCreate(
-            [
-                'mahasiswa_id'   => $mahasiswa->id,
-                'tahun_akademik' => $activeTA?->tahun ?? date('Y'),
-                'semester'       => $activeTA?->semester ?? 'Ganjil',
-                'status'         => 'unpaid',
-            ],
-            [
-                'nominal'  => 3500000,
-                'order_id' => 'UKT-' . $mahasiswa->nim . '-' . Str::random(8),
-            ]
-        );
+        $tagihan = TagihanUkt::where('mahasiswa_id', $mahasiswa->id)
+            ->where('status', 'unpaid')
+            ->latest()
+            ->first();
 
-        // If already has a payment link, redirect directly
+        if (!$tagihan) {
+            return back()->with('error', 'Tagihan tidak ditemukan atau sudah lunas.');
+        }
+
+        // If already has a payment link (manually added by admin), redirect directly
         if ($tagihan->payment_link) {
             return redirect()->away($tagihan->payment_link);
         }

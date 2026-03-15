@@ -562,4 +562,30 @@ PROMPT;
         $context = $this->contextBuilder->build($mahasiswa);
         return $this->contextBuilder->findCourseByName($context, $courseName);
     }
+
+    /**
+     * Generate professional lecturer message
+     */
+    public function generateLecturerMessage(Mahasiswa $mahasiswa, string $dosenName, string $category, string $title): array
+    {
+        $prompt = "Kamu adalah asisten mahasiswa. Buatlah draf pesan WhatsApp yang sangat sopan, profesional, dan to-the-point untuk dikirimkan mahasiswa kepada dosen.
+        
+        DATA PENERIMA:
+        - Nama Dosen: {$dosenName}
+        - Nama Mahasiswa: {$mahasiswa->user->name}
+        - NIM: {$mahasiswa->nim}
+        - Kategori Pesan: {$category}
+        - Topik/Judul: {$title}
+        
+        ATURAN PENULISAN:
+        1. Gunakan salam pembuka yang sangat formal (contoh: Assalamualaikum Bapak/Ibu [Nama Dosen], Selamat pagi Bapak/Ibu [Nama Dosen]).
+        2. Perkenalkan diri dengan sopan (Nama dan NIM).
+        3. Jelaskan maksud dan tujuan sesuai dengan kategori dan judul yang diberikan.
+        4. Gunakan bahasa Indonesia yang baku (EYD).
+        5. Akhiri dengan ucapan terima kasih yang tulus.
+        6. JANGAN gunakan emoji berlebihan.
+        7. Berikan HANYA teks pesannya saja, tanpa komentar tambahan.";
+
+        return $this->chat($mahasiswa, $prompt);
+    }
 }

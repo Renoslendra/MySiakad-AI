@@ -59,4 +59,57 @@
         @apply inline-flex items-center justify-center;
         filter: drop-shadow(0 0 6px rgba(139, 92, 246, 0.5));
     }
+
+    /* ─── Premium Text ─── */
+    .text-gradient-premium {
+        background: linear-gradient(135deg, #fff 30%, #a5b4fc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+}
+
+/* ─── Custom Animations ─── */
+@keyframes ken-burns {
+    0% { transform: scale(1.05) translate(0, 0); }
+    100% { transform: scale(1.2) translate(-2%, -1%); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0); }
+    50% { transform: translateY(-15px) rotate(2deg); }
+}
+
+@keyframes fade-in-up {
+    0% { opacity: 0; transform: translateY(30px); filter: blur(10px); }
+    100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes slide-in-right {
+    0% { opacity: 0; transform: translateX(20px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes mesh-pulse {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.1); }
+}
+
+.animate-ken-burns {
+    animation: ken-burns 15s ease-in-out infinite alternate;
+}
+
+.animate-float {
+    animation: float 8s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+    animation: fade-in-up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-in-right {
+    animation: slide-in-right 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-mesh {
+    animation: mesh-pulse 10s ease-in-out infinite;
 }

@@ -16,6 +16,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'phone',
         'fakultas_id',
     ];
 
@@ -85,5 +86,10 @@ class User extends Authenticatable
         }
 
         return $this->fakultas_id ? [$this->fakultas_id] : [];
+    }
+
+    public function reminders()
+    {
+        return $this->hasMany(Reminder::class);
     }
 }

@@ -1,3 +1,7 @@
+@php
+    /** @var \App\Models\User $user */
+    $user = Auth::user();
+@endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -360,13 +364,13 @@
           ">
         
         <!-- Mobile Sidebar Overlay (not for mahasiswa) -->
-        @if(Auth::user()->role !== 'mahasiswa')
+        @if($user->role !== 'mahasiswa')
         <div x-cloak x-show="mobileSidebarOpen" @click="mobileSidebarOpen = false" class="fixed inset-0 z-30 bg-gray-900/50 backdrop-blur-sm md:hidden transition-opacity duration-300"></div>
         @endif
 
         <div class="min-h-screen flex">
             <!-- Sidebar (hidden on mobile for mahasiswa since they have bottom nav) -->
-            <aside class="fixed inset-y-0 left-0 z-40 w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-transform duration-300 transform md:translate-x-0 md:sticky md:top-0 md:h-screen {{ Auth::user()->role === 'mahasiswa' ? 'hidden md:block' : '' }}"
+            <aside class="fixed inset-y-0 left-0 z-40 w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-transform duration-300 transform md:translate-x-0 md:sticky md:top-0 md:h-screen {{ $user->role === 'mahasiswa' ? 'hidden md:block' : '' }}"
                    :class="{ 
                        'translate-x-0': mobileSidebarOpen, 
                        '-translate-x-full': !mobileSidebarOpen,
@@ -400,7 +404,7 @@
                 <!-- Navigation -->
                 <nav class="p-3 space-y-1 overflow-y-auto" style="max-height: calc(100vh - 180px);">
 
-                    @if(in_array(Auth::user()->role, ['superadmin', 'admin_fakultas']))
+                    @if(in_array($user->role, ['superadmin', 'admin_fakultas']))
                     <!-- Admin Panel -->
                     <a href="{{ url('admin/dashboard') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('admin/dashboard') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
@@ -410,7 +414,7 @@
                     <div class="pt-4 pb-1">
                         <p class="px-3 text-[10px] font-semibold text-siakad-secondary/60 uppercase tracking-widest sidebar-section-title">Master Data</p>
                     </div>
-                    @if(Auth::user()->isSuperAdmin())
+                    @if($user->isSuperAdmin())
                     <a href="{{ url('admin/fakultas') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('admin/fakultas*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                         <span class="sidebar-text">Fakultas</span>
@@ -486,7 +490,7 @@
                     </a>
                     @endif
 
-                    @if(Auth::user()->role === 'mahasiswa')
+                    @if($user->role === 'mahasiswa')
                     <a href="{{ url('mahasiswa/dashboard') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('mahasiswa/dashboard') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                         <span class="sidebar-text">Portal Akademik</span>
@@ -498,7 +502,7 @@
                     <a href="{{ url('mahasiswa/krs') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('mahasiswa/krs*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                         <span class="sidebar-text">Pengisian KRS</span>
-                        @php $krsStatus = \App\Models\Krs::where('mahasiswa_id', Auth::user()->mahasiswa?->id)->latest()->first(); @endphp
+                        @php $krsStatus = \App\Models\Krs::where('mahasiswa_id', $user->mahasiswa?->id)->latest()->first(); @endphp
                         @if(!$krsStatus || $krsStatus->status === 'draft')
                         <span class="ml-auto px-2 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-700 rounded-full">Baru</span>
                         @endif
@@ -535,6 +539,10 @@
                         <svg class="w-[18px] h-[18px] flex-shrink-0 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
                         <span class="sidebar-text">AI Advisor</span>
                     </a>
+                    <a href="{{ route('mahasiswa.reminders.index') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('mahasiswa/reminders*') ? 'active' : '' }} bg-gradient-to-r from-green-500/10 to-emerald-500/10 hover:from-green-500/20 hover:to-emerald-500/20 mt-1">
+                        <svg class="w-[18px] h-[18px] flex-shrink-0 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span class="sidebar-text">MyReminder</span>
+                    </a>
 
                     <div class="pt-4 pb-1">
                         <p class="px-3 text-[10px] font-semibold text-siakad-secondary/60 uppercase tracking-widest sidebar-section-title">Keuangan</p>
@@ -561,7 +569,7 @@
                     </a>
                     @endif
 
-                    @if(Auth::user()->role === 'dosen')
+                    @if($user->role === 'dosen')
                     <a href="{{ url('dosen/dashboard') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('dosen/dashboard') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                         <span class="sidebar-text">Dashboard</span>
@@ -578,7 +586,7 @@
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
                         <span class="sidebar-text">Approval KRS</span>
                         @php 
-                            $dosen = Auth::user()->dosen;
+                            $dosen = $user->dosen;
                             $pendingKrs = $dosen ? \App\Models\Krs::whereIn('mahasiswa_id', $dosen->mahasiswaBimbingan()->pluck('id'))->where('status', 'pending')->count() : 0;
                         @endphp
                         @if($pendingKrs > 0)
@@ -624,11 +632,11 @@
                 <div class="absolute bottom-0 left-0 right-0 p-3" style="border-top: 1px solid var(--border-color); background-color: var(--bg-sidebar);">
                     <div class="flex items-center gap-3 user-section">
                         <div class="w-9 h-9 rounded-lg bg-siakad-primary flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
-                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                            {{ strtoupper(substr($user->name, 0, 1)) }}
                         </div>
                         <div class="flex-1 min-w-0 sidebar-user-info">
-                            <p class="text-sm font-medium truncate" style="color: var(--text-primary);">{{ Auth::user()->name }}</p>
-                            <p class="text-[11px] capitalize" style="color: var(--text-secondary);">{{ Auth::user()->role }}</p>
+                            <p class="text-sm font-medium truncate" style="color: var(--text-primary);">{{ $user->name }}</p>
+                            <p class="text-[11px] capitalize" style="color: var(--text-secondary);">{{ $user->role }}</p>
                         </div>
                         <form method="POST" action="{{ route('logout') }}" class="sidebar-user-info">
                             @csrf
@@ -646,7 +654,7 @@
                 <header class="h-16 flex items-center justify-between px-4 md:px-8 sticky top-0 z-20" style="background-color: var(--bg-card); border-bottom: 1px solid var(--border-color);">
                     <div class="flex items-center gap-3">
                         <!-- Mobile Hamburger (not for mahasiswa) -->
-                        @if(Auth::user()->role !== 'mahasiswa')
+                        @if($user->role !== 'mahasiswa')
                         <button @click="mobileSidebarOpen = true" class="md:hidden p-2 -ml-2 rounded-lg text-siakad-secondary hover:bg-siakad-light/50 transition">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                         </button>
@@ -719,8 +727,10 @@
                         </div>
                         
                         <div class="text-right hidden md:block">
-                            <p class="text-sm font-medium" style="color: var(--text-primary);">{{ Auth::user()->name }}</p>
-                            <p class="text-[11px]" style="color: var(--text-secondary);">{{ now()->format('l, d M Y') }}</p>
+                            <p class="text-sm font-medium" style="color: var(--text-primary);">{{ $user->name }}</p>
+                            <p id="realtime-clock" class="text-[11px]" style="color: var(--text-secondary);">
+                                {{ now()->translatedFormat('l, d M Y - H:i') }}
+                            </p>
                         </div>
                     </div>
                 </header>
@@ -744,7 +754,7 @@
             </div>
         </div>
 
-        @if(Auth::user()->role === 'mahasiswa')
+        @if($user->role === 'mahasiswa')
         <!-- Bottom Navigation (Mobile Only) -->
         <nav class="fixed bottom-0 z-50 w-full bg-white border-t border-gray-200 dark:bg-gray-800 dark:border-gray-700 md:hidden flex justify-around items-center h-16 pb-safe safe-area-bottom">
             <a href="{{ url('mahasiswa/dashboard') }}" class="flex flex-col items-center justify-center w-full h-full text-[10px] font-medium {{ request()->is('mahasiswa/dashboard') ? 'text-siakad-primary dark:text-blue-400' : 'text-gray-500 dark:text-gray-400' }}">
@@ -836,5 +846,33 @@
         @endif
 
         @stack('scripts')
+        
+        <!-- Real-time Clock Script -->
+        <script>
+            function updateClock() {
+                const clockElement = document.getElementById('realtime-clock');
+                if (!clockElement) return;
+
+                const now = new Date();
+                const options = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                };
+                
+                // use ID-id locale for Indonesian formatting
+                let dateString = now.toLocaleDateString('id-ID', options);
+                // format cleanup: "Minggu, 15 Mar 2026 17.56" -> "Minggu, 15 Mar 2026 - 17:56"
+                dateString = dateString.replace(/ (\d{2})\.(\d{2})$/, ' - $1:$2');
+                
+                clockElement.innerText = dateString;
+            }
+            setInterval(updateClock, 1000);
+            updateClock(); // initial call
+        </script>
     </body>
 </html>

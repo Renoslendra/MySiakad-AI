@@ -42,7 +42,7 @@
     <button class="print-btn" onclick="window.print()">🖨️ Cetak / PDF</button>
 
     <div class="header">
-        <h1>KULIM UNIVERSITY</h1>
+        <h1>MY UNIVERSITY</h1>
         <h2>{{ $mahasiswa->prodi->fakultas->nama_fakultas ?? 'FAKULTAS' }}</h2>
         <p>Jl. Bukit Barisan No. 01 | Telp: 08123456789</p>
     </div>

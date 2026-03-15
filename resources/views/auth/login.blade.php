@@ -99,7 +99,82 @@
         <!-- Future: Social Login -->
         
         <p class="text-center text-xs text-gray-500 dark:text-gray-400 mt-8">
-            Having trouble? <a href="#" class="font-medium text-siakad-primary hover:text-siakad-dark dark:text-cyan-400 dark:hover:text-cyan-300 transition-colors">Contact Support</a>
+            Having trouble? <a href="https://wa.me/6285156064912" target="_blank" class="font-medium text-siakad-primary hover:text-siakad-dark dark:text-cyan-400 dark:hover:text-cyan-300 transition-colors">Contact Support</a>
         </p>
     </form>
+    <!-- Login Credentials Helper Bubble -->
+    <div x-data="{ open: false }" class="fixed bottom-6 left-6 z-50">
+        <!-- Bubble Button -->
+        <button @click="open = !open" 
+                class="flex items-center justify-center w-14 h-14 bg-siakad-primary hover:bg-siakad-dark text-white rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-siakad-primary/30 group">
+            <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 transition-transform duration-300 group-hover:rotate-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
+            <svg x-show="open" style="display: none;" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 transition-transform duration-300 group-hover:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+
+        <!-- Credentials Popup -->
+        <div x-show="open" 
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-y-10 scale-95"
+             x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+             x-transition:leave-end="opacity-0 translate-y-10 scale-95"
+             @click.away="open = false"
+             class="absolute bottom-16 left-0 w-[350px] sm:w-[450px] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden" 
+             style="display: none;">
+            
+            <div class="p-5 bg-siakad-primary">
+                <h3 class="text-lg font-bold text-white flex items-center">
+                    <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                    </svg>
+                    Credentials Guide
+                </h3>
+                <p class="text-blue-100 text-xs mt-1">Gunakan akun berikut untuk mencoba fitur Siakad AI.</p>
+            </div>
+
+            <div class="p-4 overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="border-b border-gray-100 dark:border-gray-800">
+                            <th class="py-2 px-2 font-semibold text-gray-900 dark:text-gray-100">Role</th>
+                            <th class="py-2 px-2 font-semibold text-gray-900 dark:text-gray-100">Email</th>
+                            <th class="py-2 px-2 font-semibold text-gray-900 dark:text-gray-100">Password</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
+                        <tr>
+                            <td class="py-2 px-2 font-medium text-gray-900 dark:text-gray-100">Superadmin</td>
+                            <td class="py-2 px-2 text-gray-600 dark:text-gray-400">superadmin@siakad.test</td>
+                            <td class="py-2 px-2"><code class="px-1 py-0.5 bg-gray-100 dark:bg-gray-800 rounded">password</code></td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-2 font-medium text-gray-900 dark:text-gray-100">Admin Fak.</td>
+                            <td class="py-2 px-2 text-gray-600 dark:text-gray-400">admin.ftik@siakad.test</td>
+                            <td class="py-2 px-2"><code class="px-1 py-0.5 bg-gray-100 dark:bg-gray-800 rounded">password</code></td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-2 font-medium text-gray-900 dark:text-gray-100">Dosen</td>
+                            <td class="py-2 px-2 text-gray-600 dark:text-gray-400">dosen@siakad.test</td>
+                            <td class="py-2 px-2"><code class="px-1 py-0.5 bg-gray-100 dark:bg-gray-800 rounded">password</code></td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-2 font-medium text-gray-900 dark:text-gray-100">Mahasiswa</td>
+                            <td class="py-2 px-2 text-gray-600 dark:text-gray-400">mahasiswa@siakad.test</td>
+                            <td class="py-2 px-2"><code class="px-1 py-0.5 bg-gray-100 dark:bg-gray-800 rounded">password</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="mt-4 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-800">
+                    <p class="text-[10px] text-gray-500 dark:text-gray-400 leading-relaxed italic">
+                        Tip: Klik email untuk menyalin (Segera hadir!)
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </x-guest-layout>

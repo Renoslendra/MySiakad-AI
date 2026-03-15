@@ -7,6 +7,7 @@ use App\Models\Fakultas;
 use App\Models\Prodi;
 use App\Models\MataKuliah;
 use App\Models\Dosen;
+use App\Models\Mahasiswa;
 use App\Models\TahunAkademik;
 
 /**
@@ -231,7 +232,7 @@ class CacheService
         return Cache::remember(
             self::PREFIX_USER . ".mahasiswa.{$userId}",
             self::TTL_SHORT,
-            fn() => \App\Models\Mahasiswa::where('user_id', $userId)->with('prodi')->first()
+            fn() => Mahasiswa::where('user_id', $userId)->with('prodi')->first()
         );
     }
 
@@ -243,7 +244,7 @@ class CacheService
         return Cache::remember(
             self::PREFIX_USER . ".dosen.{$userId}",
             self::TTL_SHORT,
-            fn() => \App\Models\Dosen::where('user_id', $userId)->with('prodi')->first()
+            fn() => Dosen::where('user_id', $userId)->with('prodi')->first()
         );
     }
 
@@ -272,9 +273,9 @@ class CacheService
             : self::PREFIX_STATS . '.dashboard.global';
 
         return Cache::remember($key, self::TTL_SHORT, function () use ($fakultasId) {
-            $mahasiswaQuery = \App\Models\Mahasiswa::query();
-            $dosenQuery = \App\Models\Dosen::query();
-            $prodiQuery = \App\Models\Prodi::query();
+            $mahasiswaQuery = Mahasiswa::query();
+            $dosenQuery = Dosen::query();
+            $prodiQuery = Prodi::query();
 
             if ($fakultasId) {
                 $mahasiswaQuery->whereHas('prodi', fn($q) => $q->where('fakultas_id', $fakultasId));
@@ -286,7 +287,7 @@ class CacheService
                 'total_mahasiswa' => $mahasiswaQuery->count(),
                 'total_dosen' => $dosenQuery->count(),
                 'total_prodi' => $prodiQuery->count(),
-                'total_mata_kuliah' => \App\Models\MataKuliah::count(),
+                'total_mata_kuliah' => MataKuliah::count(),
             ];
         });
     }
