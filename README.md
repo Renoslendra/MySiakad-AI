@@ -485,6 +485,10 @@ This project is open-sourced software licensed under the [MIT license](https://o
 
 Panduan ini membantu Anda untuk me-mendeploy SIAKAD ke server produksi (VPS, Shared Hosting, atau Cloud).
 
+### Deploy otomatis (push ke main = hosting jalan sendiri)
+
+Repo: **[MySiakad-AI](https://github.com/Renoslendra/MySiakad-AI)**. Setelah connect repo ke **Railway** atau **Render** sekali (lihat **[DEPLOY.md](DEPLOY.md)**), setiap **push ke branch `main`** akan deploy otomatis. Link web tetap; fitur AI Academic Advisor jalan di hosting jika API key sudah di-set di environment.
+
 ### Step-by-Step Deployment
 
 1. **Upload Files**: Unggah semua file ke server (kecuali `node_modules` dan `vendor`).
