@@ -11,28 +11,38 @@ on:
 
 jobs:
   deploy-railway:
-    if: secrets.RAILWAY_TOKEN != '' && secrets.RAILWAY_SERVICE_ID != ''
     runs-on: ubuntu-latest
     container: ghcr.io/railwayapp/cli:latest
     env:
-      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      RAILWAY_TOKEN_VAL: ${{ secrets.RAILWAY_TOKEN }}
+      RAILWAY_SERVICE_ID_VAL: ${{ secrets.RAILWAY_SERVICE_ID }}
     steps:
       - uses: actions/checkout@v4
+        if: env.RAILWAY_TOKEN_VAL != '' && env.RAILWAY_SERVICE_ID_VAL != ''
       - name: Deploy to Railway
+        if: env.RAILWAY_TOKEN_VAL != '' && env.RAILWAY_SERVICE_ID_VAL != ''
         run: railway up --service ${{ secrets.RAILWAY_SERVICE_ID }}
 
   deploy-render:
-    if: secrets.RENDER_DEPLOY_HOOK_URL != '' && secrets.RAILWAY_TOKEN == ''
     runs-on: ubuntu-latest
+    env:
+      RENDER_HOOK_VAL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+      RAILWAY_TOKEN_VAL: ${{ secrets.RAILWAY_TOKEN }}
     steps:
+      - uses: actions/checkout@v4
+        if: env.RENDER_HOOK_VAL != '' && env.RAILWAY_TOKEN_VAL == ''
       - name: Trigger Render deploy
+        if: env.RENDER_HOOK_VAL != '' && env.RAILWAY_TOKEN_VAL == ''
         run: |
           curl -sf -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
           echo "Render deploy triggered. Link web: cek dashboard Render."
 
   no-platform:
-    if: secrets.RAILWAY_TOKEN == '' && secrets.RENDER_DEPLOY_HOOK_URL == ''
     runs-on: ubuntu-latest
+    env:
+      RAILWAY_TOKEN_VAL: ${{ secrets.RAILWAY_TOKEN }}
+      RENDER_HOOK_VAL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
     steps:
       - run: |
           echo "Belum ada secrets. Tambah RAILWAY_TOKEN + RAILWAY_SERVICE_ID (Railway) ATAU RENDER_DEPLOY_HOOK_URL (Render). Lihat DEPLOY.md."
+        if: env.RAILWAY_TOKEN_VAL == '' && env.RENDER_HOOK_VAL == ''
