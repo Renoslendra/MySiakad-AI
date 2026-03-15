@@ -1,4 +1,3 @@
-```
 {
   "version": 2,
   "public": true,
@@ -21,13 +20,9 @@
     "APP_ENV": "production",
     "APP_DEBUG": "true",
     "APP_KEY": "base64:2cFBzkJtebcFXZVkeBvSSeDi0n3B+7CktSZFi0gQFYo=",
-
     "DB_CONNECTION": "sqlite",
     "DB_DATABASE": "/tmp/database.sqlite",
     "SESSION_DRIVER": "cookie",
     "CACHE_STORE": "array"
-  },
-  "installCommand": "composer install",
-  "buildCommand": "php artisan migrate --force && npm run build"
+  }
 }
-```
