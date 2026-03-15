@@ -11,7 +11,7 @@ on:
 
 jobs:
   deploy-railway:
-    if: ${{ secrets.RAILWAY_TOKEN != '' && secrets.RAILWAY_SERVICE_ID != '' }}
+    if: secrets.RAILWAY_TOKEN != '' && secrets.RAILWAY_SERVICE_ID != ''
     runs-on: ubuntu-latest
     container: ghcr.io/railwayapp/cli:latest
     env:
@@ -22,7 +22,7 @@ jobs:
         run: railway up --service ${{ secrets.RAILWAY_SERVICE_ID }}
 
   deploy-render:
-    if: ${{ secrets.RENDER_DEPLOY_HOOK_URL != '' && secrets.RAILWAY_TOKEN == '' }}
+    if: secrets.RENDER_DEPLOY_HOOK_URL != '' && secrets.RAILWAY_TOKEN == ''
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Render deploy
@@ -31,7 +31,7 @@ jobs:
           echo "Render deploy triggered. Link web: cek dashboard Render."
 
   no-platform:
-    if: ${{ secrets.RAILWAY_TOKEN == '' && secrets.RENDER_DEPLOY_HOOK_URL == '' }}
+    if: secrets.RAILWAY_TOKEN == '' && secrets.RENDER_DEPLOY_HOOK_URL == ''
     runs-on: ubuntu-latest
     steps:
       - run: |
