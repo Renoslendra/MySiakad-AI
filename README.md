@@ -1,26 +1,14 @@
-<h1 align="center"> SIAKAD AI - Sistem Informasi Akademik</h1>
+# SIAKAD AI - Sistem Informasi Akademik
 
-<p align="center">
-  <strong>Modern Academic Information System built with Laravel 12</strong>
-</p>
+**Modern Academic Information System built with Laravel 12**
 
-<p align="center">
-  <a href="#features">Features</a> •
-  <a href="#tech-stack">Tech Stack</a> •
-  <a href="#installation">Installation</a> •
-  <a href="#configuration">Configuration</a> •
-  <a href="#usage">Usage</a> •
-  <a href="#api-documentation">API</a> •
-  <a href="#contributing">Contributing</a>
-</p>
+[Features](#features) • [Tech Stack](#tech-stack) • [Installation](#installation) • [Configuration](#configuration) • [Usage](#usage) • [API](#api-documentation) • [Contributing](#contributing)
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Laravel-12-red?style=flat-square&logo=laravel" alt="Laravel Version">
-  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=flat-square&logo=php" alt="PHP Version">
-  <img src="https://img.shields.io/badge/TailwindCSS-3.x-38bdf8?style=flat-square&logo=tailwindcss" alt="TailwindCSS">
-  <img src="https://img.shields.io/badge/Alpine.js-3.x-8BC0D0?style=flat-square&logo=alpine.js" alt="Alpine.js">
-  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License">
-</p>
+![Laravel Version](https://img.shields.io/badge/Laravel-12-red?style=flat-square&logo=laravel)
+![PHP Version](https://img.shields.io/badge/PHP-8.2+-blue?style=flat-square&logo=php)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.x-38bdf8?style=flat-square&logo=tailwindcss)
+![Alpine.js](https://img.shields.io/badge/Alpine.js-3.x-8BC0D0?style=flat-square&logo=alpine.js)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
 ---
 
@@ -532,6 +520,5 @@ Developed with ❤️ by Ryanda
 
 ---
 
-<p align="center">
-  Made with ☕ and Laravel
-</p>
+Made with ☕ and Laravel
+
