@@ -1,6 +1,5 @@
 # Deploy otomatis: push ke main di MySiakad-AI → hosting jalan otomatis
 # Repo: https://github.com/Renoslendra/MySiakad-AI
-# Setup sekali: connect repo di Railway/Render ATAU tambah secrets (RAILWAY_* / RENDER_DEPLOY_HOOK_URL)
 
 name: Deploy SIAKAD
 
@@ -9,38 +8,59 @@ on:
     branches: [main]
   workflow_dispatch: # Bisa jalankan manual dari tab Actions
 
-env:
-  RAILWAY_TOKEN_VAL: "${{ secrets['RAILWAY_TOKEN'] }}"
-  RAILWAY_SERVICE_ID_VAL: "${{ secrets['RAILWAY_SERVICE_ID'] }}"
-  RENDER_HOOK_VAL: "${{ secrets['RENDER_DEPLOY_HOOK_URL'] }}"
-
 jobs:
+  check-secrets:
+    runs-on: ubuntu-latest
+    outputs:
+      railway: ${{ steps.check.outputs.railway }}
+      render: ${{ steps.check.outputs.render }}
+      none: ${{ steps.check.outputs.none }}
+    steps:
+      - id: check
+        shell: bash
+        run: |
+          RAILWAY_READY="false"
+          RENDER_READY="false"
+          NONE_READY="false"
+          
+          if [[ -n "${{ secrets.RAILWAY_TOKEN }}" && -n "${{ secrets.RAILWAY_SERVICE_ID }}" ]]; then
+            RAILWAY_READY="true"
+          elif [[ -n "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" ]]; then
+            RENDER_READY="true"
+          else
+            NONE_READY="true"
+          fi
+          
+          echo "railway=$RAILWAY_READY" >> $GITHUB_OUTPUT
+          echo "render=$RENDER_READY" >> $GITHUB_OUTPUT
+          echo "none=$NONE_READY" >> $GITHUB_OUTPUT
+
   deploy-railway:
+    needs: check-secrets
+    if: needs.check-secrets.outputs.railway == 'true'
     runs-on: ubuntu-latest
     container: ghcr.io/railwayapp/cli:latest
     env:
-      RAILWAY_TOKEN: "${{ env.RAILWAY_TOKEN_VAL }}"
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
     steps:
       - uses: actions/checkout@v4
-        if: env.RAILWAY_TOKEN_VAL != '' && env.RAILWAY_SERVICE_ID_VAL != ''
       - name: Deploy to Railway
-        if: env.RAILWAY_TOKEN_VAL != '' && env.RAILWAY_SERVICE_ID_VAL != ''
-        run: railway up --service ${{ env.RAILWAY_SERVICE_ID_VAL }}
+        run: railway up --service ${{ secrets.RAILWAY_SERVICE_ID }}
 
   deploy-render:
+    needs: check-secrets
+    if: needs.check-secrets.outputs.render == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        if: env.RENDER_HOOK_VAL != '' && env.RAILWAY_TOKEN_VAL == ''
       - name: Trigger Render deploy
-        if: env.RENDER_HOOK_VAL != '' && env.RAILWAY_TOKEN_VAL == ''
         run: |
-          curl -sf -X POST "${{ env.RENDER_HOOK_VAL }}"
+          curl -sf -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
           echo "Render deploy triggered. Link web: cek dashboard Render."
 
   no-platform:
+    needs: check-secrets
+    if: needs.check-secrets.outputs.none == 'true'
     runs-on: ubuntu-latest
     steps:
       - run: |
           echo "Belum ada secrets. Tambah RAILWAY_TOKEN + RAILWAY_SERVICE_ID (Railway) ATAU RENDER_DEPLOY_HOOK_URL (Render). Lihat DEPLOY.md."
-        if: env.RAILWAY_TOKEN_VAL == '' && env.RENDER_HOOK_VAL == ''

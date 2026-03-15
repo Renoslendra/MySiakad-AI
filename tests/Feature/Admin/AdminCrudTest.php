@@ -1,5 +1,7 @@
-<?php
-/** @var \Tests\TestCase $this */
+/** 
+ * @var \Tests\TestCase $this 
+ * @mixin \Tests\TestCase
+ */
 
 use App\Models\User;
 use App\Models\Fakultas;
