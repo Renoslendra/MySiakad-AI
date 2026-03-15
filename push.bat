@@ -5,7 +5,7 @@ echo [MySiakad-AI] Committing changes...
 git commit -m "MySiakad-AI: %date% %time% automated update"
 echo [MySiakad-AI] Pushing to GitHub...
 git push origin main
-echo [MySiakad-AI] Done!
+echo [MySiakad-AI] Done! Your code is updated and ready for Namecheap sync.
 pause
 
 
