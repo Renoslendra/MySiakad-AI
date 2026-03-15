@@ -6,19 +6,11 @@
     }
   },
   "routes": [
-    {
-      "src": "/(build|css|js|images|favicon.ico|robots.txt)(.*)",
-      "dest": "/public/$1$2"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/api/index.php"
-    }
+    { "src": "/(build|css|js|images|favicon.ico|robots.txt)(.*)", "dest": "/public/$1$2" },
+    { "src": "/(.*)", "dest": "/api/index.php" }
   ],
   "env": {
     "APP_ENV": "production",
-    "APP_DEBUG": "false",
-    "LOG_CHANNEL": "stderr",
     "APP_KEY": "base64:nZ+naNrreRfh2U/AawjYUdCJ5doP99f0pBZLT50p17Fw=",
     "DB_CONNECTION": "sqlite",
     "DB_DATABASE": "/tmp/database.sqlite"
