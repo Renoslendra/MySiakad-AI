@@ -18,7 +18,7 @@ jobs:
       - id: check
         shell: bash
         env:
-          RENDER_HOOK: ${{ secrets['RENDER_DEPLOY_HOOK_URL'] }}
+          RENDER_HOOK: ${{ fromJson(toJson(secrets))['RENDER_DEPLOY_HOOK_URL'] }}
         run: |
           if [[ -n "$RENDER_HOOK" ]]; then
             echo "render=true" >> $GITHUB_OUTPUT
@@ -35,7 +35,7 @@ jobs:
     steps:
       - name: Trigger Render deploy
         env:
-          RENDER_HOOK: ${{ secrets['RENDER_DEPLOY_HOOK_URL'] }}
+          RENDER_HOOK: ${{ fromJson(toJson(secrets))['RENDER_DEPLOY_HOOK_URL'] }}
         run: |
           curl -sf -X POST "$RENDER_HOOK"
           echo "Render deploy triggered. Link web: cek dashboard Render."
