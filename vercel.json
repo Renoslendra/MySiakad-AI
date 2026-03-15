@@ -1,9 +1,8 @@
 {
   "version": 2,
-  "public": true,
   "functions": {
     "api/index.php": {
-      "runtime": "vercel-php@0.6.2"
+      "runtime": "@vercel/php"
     }
   },
   "routes": [
@@ -22,7 +21,7 @@
   ],
   "env": {
     "APP_ENV": "production",
-    "APP_DEBUG": "true",
+    "APP_DEBUG": "false",
     "APP_KEY": "base64:2cFBzkJtebcFXZVkeBvSSeDi0n3B+7CktSZFi0gQFYo=",
     "DB_CONNECTION": "sqlite",
     "DB_DATABASE": "/tmp/database.sqlite",
