@@ -1,0 +1,52 @@
+# Deploy otomatis: push ke main di MySiakad-AI → hosting jalan otomatis
+# Repo: https://github.com/Renoslendra/MySiakad-AI
+
+name: Deploy SIAKAD
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # Bisa jalankan manual dari tab Actions
+
+env:
+  RENDER_HOOK_VAL: "${{ secrets['RENDER_DEPLOY_HOOK_URL'] }}"
+
+jobs:
+  check-secrets:
+    runs-on: ubuntu-latest
+    outputs:
+      render: ${{ steps.check.outputs.render }}
+      none: ${{ steps.check.outputs.none }}
+    steps:
+      - id: check
+        shell: bash
+        run: |
+          RENDER_READY="false"
+          NONE_READY="false"
+          
+          if [[ -n "${{ env.RENDER_HOOK_VAL }}" ]]; then
+            RENDER_READY="true"
+          else
+            NONE_READY="true"
+          fi
+          
+          echo "render=$RENDER_READY" >> $GITHUB_OUTPUT
+          echo "none=$NONE_READY" >> $GITHUB_OUTPUT
+
+  deploy-render:
+    needs: check-secrets
+    if: needs.check-secrets.outputs.render == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy
+        run: |
+          curl -sf -X POST "${{ env.RENDER_HOOK_VAL }}"
+          echo "Render deploy triggered. Link web: cek dashboard Render."
+
+  no-platform:
+    needs: check-secrets
+    if: needs.check-secrets.outputs.none == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Belum ada secrets. Tambah RENDER_DEPLOY_HOOK_URL (Render). Lihat DEPLOY.md."
