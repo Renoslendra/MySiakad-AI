@@ -1,4 +1,5 @@
 <?php
+/** @var \Tests\TestCase $this */
 
 use App\Models\User;
 use App\Models\Fakultas;
