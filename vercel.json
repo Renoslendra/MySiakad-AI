@@ -1,18 +1,33 @@
 {
   "version": 2,
+  "public": true,
+  "framework": "laravel",
   "functions": {
     "api/index.php": {
-      "runtime": "vercel-php@0.9.0"
+      "runtime": "vercel-php@0.7.5"
     }
   },
   "routes": [
-    { "src": "/(build|css|js|images|favicon.ico|robots.txt)(.*)", "dest": "/public/$1$2" },
-    { "src": "/(.*)", "dest": "/api/index.php" }
+    {
+      "src": "/(css|js|images|fonts|favicon.ico)(.*)",
+      "dest": "public/$1$2"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "api/index.php"
+    }
   ],
   "env": {
     "APP_ENV": "production",
-    "APP_KEY": "base64:nZ+naNrreRfh2U/AawjYUdCJ5doP99f0pBZLT50p17Fw=",
+    "APP_DEBUG": "false",
+    "APP_KEY": "base64:2cFBzkJtebcFXZVkeBvSSeDi0n3B+7CktSZFi0gQFYo=",
+    "APP_URL": "https://siakad-ai.vercel.app",
     "DB_CONNECTION": "sqlite",
-    "DB_DATABASE": "/tmp/database.sqlite"
-  }
+    "DB_DATABASE": "/tmp/database.sqlite",
+    "SESSION_DRIVER": "cookie",
+    "CACHE_STORE": "array"
+  },
+  "installCommand": "composer install",
+  "buildCommand": "php artisan migrate --force && npm run build"
 }
+
