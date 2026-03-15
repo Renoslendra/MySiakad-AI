@@ -2,7 +2,20 @@
 
 **Repo GitHub:** [https://github.com/Renoslendra/MySiakad-AI](https://github.com/Renoslendra/MySiakad-AI)
 
-Proyek ini siap deploy. **Setup sekali**, lalu **setiap push ke `main` = hosting jalan otomatis** (dijalankan oleh GitHub Actions atau oleh Railway/Render). Link web Anda tetap sama.
+Proyek ini siap deploy. **Setup sekali**, lalu **setiap push ke `main` = hosting jalan otomatis**. Link web Anda tetap sama.
+
+---
+
+## Hosting 100% gratis (untuk lihat hasil – tidak perlu bayar)
+
+Keduanya **tidak perlu kartu kredit** untuk mulai. Cukup untuk cek hasil aplikasi jalan atau tidak.
+
+| Platform | Gratis? | Catatan singkat |
+|----------|--------|------------------|
+| **Render** | ✅ Gratis | Web service + PostgreSQL free. Service **tidur** setelah ~15 menit tidak dipakai (bangun lagi saat dibuka, ±1 menit). Database free terbatas (cukup untuk uji). Pilih plan **Free** saat buat service. [Info resmi](https://render.com/free) |
+| **Railway** | ✅ Kredit gratis | Sekitar **$5 kredit** gratis (cukup untuk beberapa minggu uji). Setelah habis bisa pakai plan berbayar atau pindah ke Render. [Free trial](https://docs.railway.app/reference/pricing/free-trial) |
+
+**Rekomendasi untuk “cuma mau lihat hasil”:** Pakai **Render** → pilih **Free** → dapat link web. Tidak bayar, tidak perlu kartu kredit.
 
 ---
 
@@ -40,9 +53,9 @@ Workflow **Deploy SIAKAD** di folder `.github/workflows/` akan jalan setiap push
 
 ---
 
-## Opsi 1: Railway (Disarankan – Paling Cepat)
+## Opsi 1: Railway (Cepat – ada kredit gratis)
 
-Railway mendeteksi Dockerfile dan memberi Anda link domain otomatis.
+Railway memberi **kredit gratis** untuk mulai (tanpa kartu kredit). Mendeteksi Dockerfile dan memberi link domain otomatis. Setelah kredit habis, bisa upgrade atau pindah ke Render free.
 
 ### Langkah
 
@@ -98,17 +111,30 @@ Railway mendeteksi Dockerfile dan memberi Anda link domain otomatis.
 
 ---
 
-## Opsi 2: Render (Blueprint – Satu Klik)
+## Opsi 2: Render (Gratis – tidak perlu bayar)
+
+Render punya **free tier**: web service + database PostgreSQL **gratis**, tidak perlu kartu kredit. Cocok untuk lihat hasil. Service akan tidur setelah ~15 menit tidak dipakai (saat dibuka lagi butuh ±1 menit untuk bangun). Pilih plan **Free** saat apply Blueprint / buat service.
 
 Render pakai **PostgreSQL** (bukan MySQL). Semua sudah diatur di `render.yaml`.
 
-### Langkah
+**Langkah otomatis (satu halaman):** Buka file **[RENDER_DEPLOY.html](RENDER_DEPLOY.html)** di repo ini, lalu ikuti link dan langkah di sana. Atau buka langsung: **[dashboard.render.com/select-repo?type=blueprint](https://dashboard.render.com/select-repo?type=blueprint)** → pilih Workspace → Connect repo **MySiakad-AI** → Apply. **Pastikan pilih instance type Free** (jangan Paid).
+
+### Jika muncul error: "You must specify a workspaceId to create a project"
+
+Anda harus **memilih Workspace** dulu sebelum membuat project/Blueprint:
+
+1. Buka **[dashboard.render.com](https://dashboard.render.com)**.
+2. Di **sidebar kiri** atau **atas**, cari **Workspace** (dropdown atau "Switch workspace").
+3. Pilih workspace yang ada (mis. **Personal**) atau **Create new workspace** → beri nama (mis. "My Workspace") → pilih.
+4. Setelah itu: **New** → **Blueprint** → Connect repository **MySiakad-AI** → **Apply**.
+
+### Langkah deploy
 
 1. **Push kode ke GitHub** ke repo [MySiakad-AI](https://github.com/Renoslendra/MySiakad-AI) (pastikan ada `render.yaml`).
 
 2. **Buka [render.com](https://render.com)** → Login (bisa GitHub).
 
-3. **New** → **Blueprint** → Connect repository **MySiakad-AI** (`Renoslendra/MySiakad-AI`) → **Apply**.
+3. **Pilih Workspace** dulu (lihat di atas). Lalu **New** → **Blueprint** → Connect repository **MySiakad-AI** (`Renoslendra/MySiakad-AI`) → **Apply**.
 
 4. Render akan membuat:
    - Web service **siakad** (dari Dockerfile),

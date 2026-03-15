@@ -22,3 +22,15 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Database
+/*.sqlite
+/*.sqlite-journal
+/*.sql
+
+# IDEs
+.vscode/
+.idea/
+.zed/
+.fleet/
+.nova/

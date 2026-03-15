@@ -6,6 +6,13 @@
 *.md
 !DEPLOY.md
 
+# Scripts & Local Tools
+push.bat
+CNAME
+docker-compose*
+*.log
+Thumbs.db
+
 # Dependencies (install in container)
 node_modules
 vendor
@@ -35,6 +42,3 @@ coverage
 # Misc
 Dockerfile*
 .dockerignore
-docker-compose*
-*.log
-Thumbs.db
