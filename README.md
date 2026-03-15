@@ -131,7 +131,7 @@
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/ryandaaa/siakad.git
+git clone https://github.com/Renoslendra/MySiakad-AI.git
 cd siakad
 
 # 2. Install PHP dependencies
