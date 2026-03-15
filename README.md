@@ -481,46 +481,6 @@ This project is open-sourced software licensed under the [MIT license](https://o
 
 ---
 
-## 🚀 Deployment & Hosting
-
-Panduan ini membantu Anda untuk me-mendeploy SIAKAD ke server produksi (VPS, Shared Hosting, atau Cloud).
-
-### Deploy otomatis (push ke main = hosting jalan sendiri)
-
-Repo: **[MySiakad-AI](https://github.com/Renoslendra/MySiakad-AI)**. Setelah connect repo ke **Railway** atau **Render** sekali (lihat **[DEPLOY.md](DEPLOY.md)**), setiap **push ke branch `main`** akan deploy otomatis. Link web tetap; fitur AI Academic Advisor jalan di hosting jika API key sudah di-set di environment.
-
-### Step-by-Step Deployment
-
-1. **Upload Files**: Unggah semua file ke server (kecuali `node_modules` dan `vendor`).
-2. **Environment Setup**:
-   ```bash
-   cp .env.example .env
-   # Edit .env dan masukkan database produksi & API keys
-   ```
-3. **Install Dependencies**:
-   ```bash
-   composer install --optimize-autoloader --no-dev
-   npm install && npm run build
-   ```
-4. **Optimize Laravel**:
-   ```bash
-   php artisan config:cache
-   php artisan route:cache
-   php artisan view:cache
-   ```
-5. **Database Migration**:
-   ```bash
-   php artisan migrate --force
-   ```
-
-### Hosting Recommendations
-- **PHP**: 8.2+
-- **Extensions**: BCMath, Ctype, Fileinfo, JSON, Mbstring, OpenSSL, PDO, Tokenizer, XML.
-- **Web Server**: Nginx (direkomendasikan) atau Apache dengan `mod_rewrite`.
-- **Database**: MySQL 8.0+ atau MariaDB 10.x.
-
----
-
 ## Author
 
 Developed with ❤️ by Ryanda
