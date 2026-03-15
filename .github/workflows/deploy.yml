@@ -14,32 +14,28 @@ jobs:
     outputs:
       render: ${{ steps.check.outputs.render }}
       none: ${{ steps.check.outputs.none }}
-    env:
-      RENDER_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
     steps:
       - id: check
         shell: bash
+        env:
+          RENDER_HOOK: ${{ secrets['RENDER_DEPLOY_HOOK_URL'] }}
         run: |
-          RENDER_READY="false"
-          NONE_READY="false"
-          
           if [[ -n "$RENDER_HOOK" ]]; then
-            RENDER_READY="true"
+            echo "render=true" >> $GITHUB_OUTPUT
+            echo "none=false" >> $GITHUB_OUTPUT
           else
-            NONE_READY="true"
+            echo "render=false" >> $GITHUB_OUTPUT
+            echo "none=true" >> $GITHUB_OUTPUT
           fi
-          
-          echo "render=$RENDER_READY" >> $GITHUB_OUTPUT
-          echo "none=$NONE_READY" >> $GITHUB_OUTPUT
 
   deploy-render:
     needs: check-secrets
     if: needs.check-secrets.outputs.render == 'true'
     runs-on: ubuntu-latest
-    env:
-      RENDER_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
     steps:
       - name: Trigger Render deploy
+        env:
+          RENDER_HOOK: ${{ secrets['RENDER_DEPLOY_HOOK_URL'] }}
         run: |
           curl -sf -X POST "$RENDER_HOOK"
           echo "Render deploy triggered. Link web: cek dashboard Render."
