@@ -88,6 +88,22 @@ class AcademicAdvisorTest extends TestCase
 
         // Create some completed courses (LULUS) - total 87 SKS
         $this->createCompletedCourses(87);
+
+        // Explicitly create Big Data course for curriculum tests
+        MataKuliah::create([
+            'kode_mk' => 'TIF701',
+            'nama_mk' => 'Big Data',
+            'sks' => 3,
+            'semester' => 7,
+        ]);
+
+        // Create some generic available courses to satisfy assertGreaterThan(0)
+        MataKuliah::create([
+            'kode_mk' => 'GEN001',
+            'nama_mk' => 'Generic Course 1',
+            'sks' => 3,
+            'semester' => 1,
+        ]);
     }
 
     protected function createCompletedCourses(int $targetSks): void
