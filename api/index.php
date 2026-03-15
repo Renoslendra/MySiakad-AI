@@ -1,12 +1,14 @@
 <?php
 
 // Ensure the SQLite database exists if we are using it
-if (env('DB_CONNECTION') === 'sqlite') {
-    $dbPath = env('DB_DATABASE', '/tmp/database.sqlite');
+$dbConn = getenv('DB_CONNECTION');
+if ($dbConn === 'sqlite') {
+    $dbPath = getenv('DB_DATABASE') ?: '/tmp/database.sqlite';
     if (!file_exists($dbPath)) {
+        if (!is_dir(dirname($dbPath))) {
+            mkdir(dirname($dbPath), 0777, true);
+        }
         touch($dbPath);
-        // Run migrations if needed - though usually better done in build step
-        // For now, we just ensure the file exists so Laravel doesn't crash
     }
 }
 

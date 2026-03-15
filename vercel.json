@@ -1,7 +1,7 @@
+```
 {
   "version": 2,
   "public": true,
-  "framework": "laravel",
   "functions": {
     "api/index.php": {
       "runtime": "vercel-php@0.7.5"
@@ -30,4 +30,4 @@
   "installCommand": "composer install",
   "buildCommand": "php artisan migrate --force && npm run build"
 }
-
+```
