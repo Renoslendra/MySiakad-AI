@@ -64,6 +64,16 @@ class Mahasiswa extends Model
     {
         return $this->hasMany(TugasSubmission::class);
     }
+
+    public function tagihanUkt()
+    {
+        return $this->hasMany(TagihanUkt::class);
+    }
+
+    public function activeTagihanUkt()
+    {
+        return $this->hasOne(TagihanUkt::class)->latestOfMany();
+    }
 }
 
 

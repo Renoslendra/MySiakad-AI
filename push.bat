@@ -1,0 +1,9 @@
+@echo off
+echo [MySiakad-AI] Staging changes...
+git add .
+echo [MySiakad-AI] Committing changes...
+git commit -m "MySiakad-AI: %date% %time% automated update"
+echo [MySiakad-AI] Pushing to GitHub...
+git push origin main
+echo [MySiakad-AI] Done!
+pause

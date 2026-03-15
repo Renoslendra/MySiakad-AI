@@ -14,5 +14,6 @@ require __DIR__.'/lms.php';
 require __DIR__.'/materi.php';
 require __DIR__.'/presensi.php';
 require __DIR__.'/skripsi.php';
+require __DIR__.'/tagihan.php';
 require __DIR__.'/transkrip.php';
 require __DIR__.'/tugas.php';

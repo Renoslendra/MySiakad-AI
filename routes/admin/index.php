@@ -11,4 +11,5 @@ require __DIR__.'/krs.php';
 require __DIR__.'/mahasiswa.php';
 require __DIR__.'/ruangan.php';
 require __DIR__.'/skripsi.php';
+require __DIR__.'/tagihan-ukt.php';
 require __DIR__.'/user.php';

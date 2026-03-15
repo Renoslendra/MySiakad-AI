@@ -15,6 +15,10 @@ use App\Models\KrsDetail;
 use App\Models\Nilai;
 use App\Models\JadwalKuliah;
 use App\Models\Ruangan;
+use App\Models\Skripsi;
+use App\Models\BimbinganSkripsi;
+use App\Models\KerjaPraktek;
+use App\Models\LogbookKp;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -252,6 +256,81 @@ class DatabaseSeeder extends Seeder
                 'kapasitas' => 40, 'tahun_akademik_id' => $taAktif->id,
             ]);
             KrsDetail::create(['krs_id' => $krsSekarang->id, 'kelas_id' => $kelas5->id]);
+        }
+
+        // ==========================================
+        // 12. SKRIPSI & BIMBINGAN SKRIPSI
+        // ==========================================
+        $skripsi = Skripsi::create([
+            'mahasiswa_id' => $mahasiswa->id,
+            'pembimbing1_id' => $dosen->id,
+            'judul' => 'Implementasi Machine Learning untuk Prediksi Kelulusan Mahasiswa Berbasis Data Akademik',
+            'bidang_kajian' => 'Machine Learning',
+            'status' => 'bimbingan',
+            'tanggal_pengajuan' => '2024-09-15',
+            'tanggal_acc_judul' => '2024-10-01',
+        ]);
+
+        // Bimbingan 1 - sudah disetujui
+        BimbinganSkripsi::create([
+            'skripsi_id' => $skripsi->id,
+            'dosen_id' => $dosen->id,
+            'tanggal_bimbingan' => '2024-10-10',
+            'catatan_mahasiswa' => 'Konsultasi BAB I - Pendahuluan dan latar belakang penelitian.',
+            'catatan_dosen' => 'Latar belakang sudah cukup baik. Perbaiki rumusan masalah agar lebih spesifik.',
+            'status' => 'disetujui',
+        ]);
+
+        // Bimbingan 2 - sudah disetujui
+        BimbinganSkripsi::create([
+            'skripsi_id' => $skripsi->id,
+            'dosen_id' => $dosen->id,
+            'tanggal_bimbingan' => '2024-11-05',
+            'catatan_mahasiswa' => 'Konsultasi BAB II - Tinjauan pustaka dan studi literatur terkait algoritma Random Forest dan SVM.',
+            'catatan_dosen' => 'Tambahkan referensi jurnal internasional minimal 5 paper terbaru.',
+            'status' => 'disetujui',
+        ]);
+
+        // Bimbingan 3 - menunggu review
+        BimbinganSkripsi::create([
+            'skripsi_id' => $skripsi->id,
+            'dosen_id' => $dosen->id,
+            'tanggal_bimbingan' => '2024-12-01',
+            'catatan_mahasiswa' => 'Konsultasi BAB III - Metodologi penelitian, dataset dan preprocessing data.',
+            'catatan_dosen' => null,
+            'status' => 'menunggu',
+        ]);
+
+        // ==========================================
+        // 13. KERJA PRAKTEK & LOGBOOK
+        // ==========================================
+        $kp = KerjaPraktek::create([
+            'mahasiswa_id' => $mahasiswa->id,
+            'pembimbing_id' => $dosen->id,
+            'nama_perusahaan' => 'PT Telkom Indonesia',
+            'alamat_perusahaan' => 'Jl. Japati No.1, Bandung',
+            'bidang_usaha' => 'Telekomunikasi & Digital',
+            'nama_pembimbing_lapangan' => 'Ir. Siti Rahayu',
+            'jabatan_pembimbing_lapangan' => 'Senior Software Engineer',
+            'no_telp_pembimbing' => '081234567890',
+            'tanggal_mulai' => '2024-07-01',
+            'tanggal_selesai' => '2024-09-30',
+            'judul_laporan' => 'Pengembangan RESTful API untuk Sistem Monitoring Jaringan',
+            'status' => 'penyusunan_laporan',
+        ]);
+
+        // Logbook entries
+        $logbookEntries = [
+            ['tanggal' => '2024-07-01', 'jam_masuk' => '08:00', 'jam_keluar' => '17:00', 'kegiatan' => 'Orientasi perusahaan dan pengenalan tim divisi IT.', 'status' => 'disetujui', 'catatan_pembimbing' => 'OK.'],
+            ['tanggal' => '2024-07-08', 'jam_masuk' => '08:00', 'jam_keluar' => '17:00', 'kegiatan' => 'Mempelajari arsitektur sistem monitoring jaringan yang sudah berjalan.', 'status' => 'disetujui', 'catatan_pembimbing' => 'Bagus, lanjutkan.'],
+            ['tanggal' => '2024-07-15', 'jam_masuk' => '08:00', 'jam_keluar' => '17:00', 'kegiatan' => 'Merancang database dan endpoint API untuk modul monitoring.', 'status' => 'disetujui', 'catatan_pembimbing' => null],
+            ['tanggal' => '2024-07-22', 'jam_masuk' => '08:00', 'jam_keluar' => '17:00', 'kegiatan' => 'Implementasi CRUD API menggunakan Laravel untuk data perangkat jaringan.', 'status' => 'disetujui', 'catatan_pembimbing' => null],
+            ['tanggal' => '2024-08-05', 'jam_masuk' => '08:00', 'jam_keluar' => '17:00', 'kegiatan' => 'Implementasi fitur real-time notification menggunakan WebSocket.', 'status' => 'disetujui', 'catatan_pembimbing' => 'Implementasi sudah sesuai.'],
+            ['tanggal' => '2024-08-19', 'jam_masuk' => '08:00', 'jam_keluar' => '17:00', 'kegiatan' => 'Unit testing dan integration testing API.', 'status' => 'pending', 'catatan_pembimbing' => null],
+        ];
+
+        foreach ($logbookEntries as $entry) {
+            LogbookKp::create(array_merge($entry, ['kerja_praktek_id' => $kp->id]));
         }
 
         // ==========================================

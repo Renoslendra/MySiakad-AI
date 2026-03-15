@@ -257,16 +257,25 @@ return [
 
 ---
 
-## Default Users
+## 🔑 Cara Akses Login
 
-After running seeders, you can login with:
+Setelah menjalankan aplikasi dengan `php artisan serve`, Anda dapat mengakses halaman login melalui:
+
+**URL**: [http://localhost:8000/login](http://localhost:8000/login)
+
+### Akun Default
+
+Gunakan kredensial berikut untuk mencoba berbagai fitur berdasarkan peran:
 
 | Role | Email | Password | Description |
 |------|-------|----------|-------------|
-| **Superadmin** | `superadmin@siakad.test` | `password` | Full system access |
-| **Admin Fakultas** | `admin.ftik@siakad.test` | `password` | Faculty-scoped admin |
-| **Dosen** | `dosen@siakad.test` | `password` | Dr. Ahmad Fauzi, M.Kom. |
-| **Mahasiswa** | `mahasiswa@siakad.test` | `password` | Budi Santoso (Semester 5, NIM: 2022101001) |
+| **Superadmin** | `superadmin@siakad.test` | `password` | Akses penuh ke sistem |
+| **Admin Fakultas** | `admin.ftik@siakad.test` | `password` | Admin khusus lingkup fakultas |
+| **Dosen** | `dosen@siakad.test` | `password` | Akses dosen (Dr. Ahmad Fauzi) |
+| **Mahasiswa** | `mahasiswa@siakad.test` | `password` | Akses mahasiswa (Budi Santoso) |
+
+> [!IMPORTANT]
+> Pastikan Anda telah menjalankan `php artisan migrate --seed` sebelum mencoba login untuk pertama kali agar data akun di atas tersedia di database.
 
 > **Important**: Change these passwords immediately in production!
 
@@ -469,6 +478,42 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+---
+
+## 🚀 Deployment & Hosting
+
+Panduan ini membantu Anda untuk me-mendeploy SIAKAD ke server produksi (VPS, Shared Hosting, atau Cloud).
+
+### Step-by-Step Deployment
+
+1. **Upload Files**: Unggah semua file ke server (kecuali `node_modules` dan `vendor`).
+2. **Environment Setup**:
+   ```bash
+   cp .env.example .env
+   # Edit .env dan masukkan database produksi & API keys
+   ```
+3. **Install Dependencies**:
+   ```bash
+   composer install --optimize-autoloader --no-dev
+   npm install && npm run build
+   ```
+4. **Optimize Laravel**:
+   ```bash
+   php artisan config:cache
+   php artisan route:cache
+   php artisan view:cache
+   ```
+5. **Database Migration**:
+   ```bash
+   php artisan migrate --force
+   ```
+
+### Hosting Recommendations
+- **PHP**: 8.2+
+- **Extensions**: BCMath, Ctype, Fileinfo, JSON, Mbstring, OpenSSL, PDO, Tokenizer, XML.
+- **Web Server**: Nginx (direkomendasikan) atau Apache dengan `mod_rewrite`.
+- **Database**: MySQL 8.0+ atau MariaDB 10.x.
 
 ---
 

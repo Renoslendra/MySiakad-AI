@@ -7,16 +7,16 @@ Route::get('/', fn() => redirect()->route('login'));
 
 // Redirect generic dashboard to role-specific dashboard
 Route::get('/dashboard', function () {
+    $user = auth()->user();
     $routes = [
         'superadmin'     => 'admin.dashboard',
         'admin_fakultas' => 'admin.dashboard',
         'dosen'          => 'dosen.dashboard',
         'mahasiswa'      => 'mahasiswa.dashboard',
     ];
+    $route = $routes[$user->role ?? ''] ?? null;
 
-    $role = auth()->user()->role;
-
-    return redirect()->route($routes[$role] ?? 'login');
+    return $route ? redirect()->route($route) : redirect()->route('login');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 

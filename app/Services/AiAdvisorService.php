@@ -25,16 +25,19 @@ class AiAdvisorService
     ) {
         $this->contextBuilder = $contextBuilder;
         $this->guards = $guards;
-        
-        // Get AI provider from config (default: qwen)
-        $this->provider = config('services.ai_provider', 'qwen');
-        
+
+        // Get AI provider from config (default: openrouter)
+        $this->provider = config('services.ai_provider', 'openrouter');
+
         if ($this->provider === 'qwen') {
-            $this->apiKey = config('services.qwen.api_key', '');
-            $this->model = config('services.qwen.model', 'Qwen/Qwen3-4B-Instruct-2507');
+            $this->apiKey = (string) config('services.qwen.api_key', '');
+            $this->model = (string) config('services.qwen.model', 'Qwen/Qwen2.5-72B-Instruct');
+        } elseif ($this->provider === 'openrouter') {
+            $this->apiKey = (string) config('services.openrouter.api_key', '');
+            $this->model = (string) config('services.openrouter.model', 'google/gemini-2.0-flash-001');
         } else {
-            $this->apiKey = config('services.gemini.api_key', '');
-            $this->model = 'gemini-2.5-flash-lite';
+            $this->apiKey = (string) config('services.gemini.api_key', '');
+            $this->model = (string) config('services.gemini.model', 'gemini-1.5-flash');
         }
     }
 
@@ -118,7 +121,7 @@ class AiAdvisorService
                             }
                         }
                     }
-                    
+
                     // Log guard-applied conversation
                     $responseTimeMs = (int) ((microtime(true) - $startTime) * 1000);
                     $this->logConversation($mahasiswa, $message, $guardResult['replacement_output'], [
@@ -126,7 +129,7 @@ class AiAdvisorService
                         'guard_applied' => true,
                         'guard_issues' => $guardResult['issues'],
                     ]);
-                    
+
                     return [
                         'success' => true,
                         'message' => $guardResult['replacement_output'] . $debugInfo,
@@ -137,7 +140,7 @@ class AiAdvisorService
 
             // Calculate response time
             $responseTimeMs = (int) ((microtime(true) - $startTime) * 1000);
-            
+
             // Log successful conversation
             $this->logConversation($mahasiswa, $message, $output, [
                 'response_time_ms' => $responseTimeMs,
@@ -239,15 +242,56 @@ class AiAdvisorService
         try {
             if ($this->provider === 'qwen') {
                 return $this->callQwenApi($messages);
-            } else {
-                return $this->callGeminiApi($messages);
+            } elseif ($this->provider === 'openrouter') {
+                return $this->callOpenRouterApi($messages);
             }
+
+            return $this->callGeminiApi($messages);
         } catch (\Exception $e) {
             return [
                 'success' => false,
                 'message' => 'Terjadi kesalahan koneksi: ' . $e->getMessage(),
             ];
         }
+    }
+
+    /**
+     * Call OpenRouter API (OpenAI Compatible)
+     */
+    protected function callOpenRouterApi(array $messages): array
+    {
+        $response = Http::timeout(30)
+            ->withHeaders([
+                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Content-Type' => 'application/json',
+                'HTTP-Referer' => config('app.url'), // Optional, for OpenRouter dashboard
+                'X-Title' => 'SIAKAD AI Advisor', // Optional, for OpenRouter dashboard
+            ])
+            ->post('https://openrouter.ai/api/v1/chat/completions', [
+                'model' => $this->model,
+                'messages' => $messages,
+                'temperature' => 0.1,
+                'max_tokens' => 2048,
+            ]);
+
+        if ($response->successful()) {
+            $data = $response->json();
+            $text = $data['choices'][0]['message']['content'] ?? 'Maaf, saya tidak bisa memberikan respons saat ini.';
+
+            return [
+                'success' => true,
+                'message' => $text,
+            ];
+        }
+
+        $error = $response->json();
+        $statusCode = $response->status();
+        $errorMessage = $error['error']['message'] ?? json_encode($error) ?? 'Unknown error';
+
+        return [
+            'success' => false,
+            'message' => "Gagal mendapatkan respons dari AI (OpenRouter). Status: {$statusCode}. Detail: {$errorMessage}",
+        ];
     }
 
     /**
@@ -273,10 +317,10 @@ class AiAdvisorService
 
         if ($response->successful()) {
             $data = $response->json();
-            
+
             // OpenAI-compatible response format
             $text = $data['choices'][0]['message']['content'] ?? 'Maaf, saya tidak bisa memberikan respons saat ini.';
-            
+
             // Clean thinking tags if present (Qwen3 uses <think> tags)
             $text = $this->cleanQwenThinkingTags($text);
 
@@ -287,9 +331,12 @@ class AiAdvisorService
         }
 
         $error = $response->json();
+        $statusCode = $response->status();
+        $errorMessage = $error['error']['message'] ?? $error['error'] ?? $error['message'] ?? 'Unknown error';
+
         return [
             'success' => false,
-            'message' => 'Gagal mendapatkan respons dari AI: ' . ($error['error']['message'] ?? $error['error'] ?? $error['message'] ?? 'Unknown error'),
+            'message' => "Gagal mendapatkan respons dari AI (Qwen). Status: {$statusCode}. Detail: {$errorMessage}",
         ];
     }
 
@@ -298,21 +345,68 @@ class AiAdvisorService
      */
     protected function callGeminiApi(array $messages): array
     {
+        // Safety check for API Key format
+        if (str_starts_with($this->apiKey, 'sk-')) {
+            return [
+                'success' => false,
+                'message' => "Format API Key tidak valid untuk Gemini. Key Anda diawali dengan 'sk-', yang biasanya digunakan untuk OpenAI atau Groq. Silakan gunakan key yang diawali dengan 'AIzaSy' dari Google AI Studio.",
+            ];
+        }
+
+        // Convert OpenAI-style messages to Gemini Native contents
+        $contents = [];
+        $systemText = "";
+
+        foreach ($messages as $msg) {
+            if ($msg['role'] === 'system') {
+                $systemText .= $msg['content'] . "\n\n";
+                continue;
+            }
+
+            $contents[] = [
+                'role' => ($msg['role'] === 'assistant' || $msg['role'] === 'model') ? 'model' : 'user',
+                'parts' => [
+                    ['text' => $msg['content']]
+                ]
+            ];
+        }
+
+        // Prepend system instruction to the first user message for maximum compatibility
+        if (!empty($systemText) && !empty($contents)) {
+            $firstUserIdx = -1;
+            foreach ($contents as $idx => $content) {
+                if ($content['role'] === 'user') {
+                    $firstUserIdx = $idx;
+                    break;
+                }
+            }
+
+            if ($firstUserIdx !== -1) {
+                $contents[$firstUserIdx]['parts'][0]['text'] = "INSTRUCTION:\n" . $systemText . "---\n\n" . $contents[$firstUserIdx]['parts'][0]['text'];
+            }
+        }
+
+        // Native Gemini URL (using v1beta for widest model support)
+        $modelName = str_contains($this->model, '/') ? explode('/', $this->model)[1] : $this->model;
+        $url = "https://generativelanguage.googleapis.com/v1beta/models/{$modelName}:generateContent?key={$this->apiKey}";
+
+        $payload = [
+            'contents' => $contents,
+            'generationConfig' => [
+                'temperature' => 0.1,
+                'maxOutputTokens' => 2048,
+            ]
+        ];
+
         $response = Http::timeout(30)
             ->withHeaders([
-                'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',
             ])
-            ->post('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', [
-                'model' => $this->model,
-                'messages' => $messages,
-                'temperature' => 0,
-                'max_completion_tokens' => 1024,
-            ]);
+            ->post($url, $payload);
 
         if ($response->successful()) {
             $data = $response->json();
-            $text = $data['choices'][0]['message']['content'] ?? 'Maaf, saya tidak bisa memberikan respons saat ini.';
+            $text = $data['candidates'][0]['content']['parts'][0]['text'] ?? 'Maaf, saya tidak bisa memberikan respons saat ini.';
 
             return [
                 'success' => true,
@@ -321,9 +415,12 @@ class AiAdvisorService
         }
 
         $error = $response->json();
+        $statusCode = $response->status();
+        $errorMessage = $error['error']['message'] ?? json_encode($error) ?? 'Unknown error';
+
         return [
             'success' => false,
-            'message' => 'Gagal mendapatkan respons dari AI: ' . ($error['error']['message'] ?? 'Unknown error'),
+            'message' => "Gagal mendapatkan respons dari AI (Gemini Native). Status: {$statusCode}. Detail: {$errorMessage}",
         ];
     }
 

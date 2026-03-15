@@ -37,6 +37,7 @@ return [
 
     'gemini' => [
         'api_key' => env('GEMINI_API_KEY'),
+        'model' => env('GEMINI_MODEL', 'gemini-1.5-flash'),
     ],
 
     'groq' => [
@@ -49,7 +50,16 @@ return [
         'base_url' => env('QWEN_BASE_URL', 'https://api.bytez.com/models/v2'),
     ],
 
-    // AI Provider selection: 'gemini' or 'qwen'
-    'ai_provider' => env('AI_PROVIDER', 'qwen'),
+    'mayar' => [
+        'api_key' => env('MAYAR_API_KEY'),
+        'base_url' => env('MAYAR_BASE_URL', 'https://api.mayar.id/hl/v1'),
+        'webhook_secret' => env('MAYAR_WEBHOOK_SECRET'),
+    ],
 
+    'ai_provider' => env('AI_PROVIDER', 'gemini'),
+
+    'openrouter' => [
+        'api_key' => env('OPENROUTER_API_KEY'),
+        'model' => env('OPENROUTER_MODEL', 'google/gemini-2.0-flash-001'),
+    ],
 ];

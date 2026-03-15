@@ -1,3 +1,62 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    /* ─── Glassmorphism Card ─── */
+    .glass-card {
+        @apply bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-slate-700/50;
+    }
+
+    /* ─── Bento Card ─── */
+    .bento-card {
+        @apply relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/60 shadow-bento transition-all duration-300 ease-out;
+    }
+    .bento-card:hover {
+        @apply shadow-bento-hover -translate-y-0.5;
+    }
+
+    /* ─── AI Glow Card ─── */
+    .ai-glow-card {
+        @apply relative overflow-hidden rounded-2xl;
+    }
+    .ai-glow-card::before {
+        content: "";
+        @apply absolute -inset-[2px] rounded-2xl opacity-75;
+        background: linear-gradient(
+            135deg,
+            #7c3aed,
+            #6366f1,
+            #8b5cf6,
+            #a78bfa,
+            #7c3aed
+        );
+        background-size: 300% 300%;
+        animation: gradientX 4s ease infinite;
+        z-index: -1;
+    }
+    .ai-glow-card > .ai-glow-inner {
+        @apply relative rounded-[14px] bg-gradient-to-br from-slate-900 via-indigo-950 to-violet-950 p-6 h-full;
+    }
+
+    /* ─── Stat Badge ─── */
+    .stat-icon-box {
+        @apply w-12 h-12 rounded-xl flex items-center justify-center ring-1 ring-inset;
+    }
+
+    /* ─── UKT / Payment Card ─── */
+    .ukt-card {
+        @apply relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 p-6 text-white;
+    }
+    .ukt-card::after {
+        content: "";
+        @apply absolute top-0 right-0 w-40 h-40 opacity-10;
+        background: radial-gradient(circle, #7c3aed 0%, transparent 70%);
+    }
+
+    /* ─── Sparkle Icon ─── */
+    .sparkle-icon {
+        @apply inline-flex items-center justify-center;
+        filter: drop-shadow(0 0 6px rgba(139, 92, 246, 0.5));
+    }
+}
