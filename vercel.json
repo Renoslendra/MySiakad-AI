@@ -19,9 +19,9 @@
   ],
   "env": {
     "APP_ENV": "production",
-    "APP_DEBUG": "false",
+    "APP_DEBUG": "true",
     "APP_KEY": "base64:2cFBzkJtebcFXZVkeBvSSeDi0n3B+7CktSZFi0gQFYo=",
-    "APP_URL": "https://siakad-ai.vercel.app",
+
     "DB_CONNECTION": "sqlite",
     "DB_DATABASE": "/tmp/database.sqlite",
     "SESSION_DRIVER": "cookie",
