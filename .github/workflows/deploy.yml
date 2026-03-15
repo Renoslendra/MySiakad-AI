@@ -12,40 +12,23 @@ jobs:
   check-secrets:
     runs-on: ubuntu-latest
     outputs:
-      railway: ${{ steps.check.outputs.railway }}
       render: ${{ steps.check.outputs.render }}
       none: ${{ steps.check.outputs.none }}
     steps:
       - id: check
         shell: bash
         run: |
-          RAILWAY_READY="false"
           RENDER_READY="false"
           NONE_READY="false"
           
-          if [[ -n "${{ secrets.RAILWAY_TOKEN }}" && -n "${{ secrets.RAILWAY_SERVICE_ID }}" ]]; then
-            RAILWAY_READY="true"
-          elif [[ -n "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" ]]; then
+          if [[ -n "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" ]]; then
             RENDER_READY="true"
           else
             NONE_READY="true"
           fi
           
-          echo "railway=$RAILWAY_READY" >> $GITHUB_OUTPUT
           echo "render=$RENDER_READY" >> $GITHUB_OUTPUT
           echo "none=$NONE_READY" >> $GITHUB_OUTPUT
-
-  deploy-railway:
-    needs: check-secrets
-    if: needs.check-secrets.outputs.railway == 'true'
-    runs-on: ubuntu-latest
-    container: ghcr.io/railwayapp/cli:latest
-    env:
-      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Deploy to Railway
-        run: railway up --service ${{ secrets.RAILWAY_SERVICE_ID }}
 
   deploy-render:
     needs: check-secrets
@@ -63,4 +46,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "Belum ada secrets. Tambah RAILWAY_TOKEN + RAILWAY_SERVICE_ID (Railway) ATAU RENDER_DEPLOY_HOOK_URL (Render). Lihat DEPLOY.md."
+          echo "Belum ada secrets. Tambah RENDER_DEPLOY_HOOK_URL (Render). Lihat DEPLOY.md."
