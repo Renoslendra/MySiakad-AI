@@ -119,7 +119,7 @@
                         </button>
                     </div>
                     <div class="flex items-center justify-center mt-3 text-[11px] text-slate-400 dark:text-slate-500">
-                        <span>Enter untuk kirim &nbsp;&bull;&nbsp; Shift+Enter baris baru &nbsp;&bull;&nbsp; Powered by Qwen AI</span>
+                        <span>Enter untuk kirim &nbsp;&bull;&nbsp; Shift+Enter baris baru &nbsp;&bull;&nbsp; Powered by {{ $providerName }}</span>
                     </div>
                 </div>
             </div>

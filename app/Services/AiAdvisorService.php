@@ -26,17 +26,31 @@ class AiAdvisorService
         $this->contextBuilder = $contextBuilder;
         $this->guards = $guards;
 
-        // Get AI provider from config (default: openrouter)
-        $this->provider = config('services.ai_provider', 'openrouter');
+        // Get AI provider from config
+        $this->provider = config('services.ai_provider', 'gemini');
+        $apiKey = '';
+
+        // Auto-detect provider based on key format even if CONFIG says gemini
+        $geminiKey = (string) config('services.gemini.api_key', '');
+        $openRouterKey = (string) config('services.openrouter.api_key', '');
+
+        // If AI_PROVIDER is gemini but key is clearly an OpenRouter/Other key
+        if ($this->provider === 'gemini') {
+            if (str_starts_with($geminiKey, 'sk-or-') || str_starts_with($openRouterKey, 'sk-or-')) {
+                $this->provider = 'openrouter';
+            } elseif (str_starts_with($geminiKey, 'sk-') || str_starts_with($openRouterKey, 'sk-')) {
+                $this->provider = 'openrouter';
+            }
+        }
 
         if ($this->provider === 'qwen') {
             $this->apiKey = (string) config('services.qwen.api_key', '');
             $this->model = (string) config('services.qwen.model', 'Qwen/Qwen2.5-72B-Instruct');
         } elseif ($this->provider === 'openrouter') {
-            $this->apiKey = (string) config('services.openrouter.api_key', '');
+            $this->apiKey = !empty($openRouterKey) ? $openRouterKey : $geminiKey;
             $this->model = (string) config('services.openrouter.model', 'google/gemini-2.0-flash-001');
         } else {
-            $this->apiKey = (string) config('services.gemini.api_key', '');
+            $this->apiKey = $geminiKey;
             $this->model = (string) config('services.gemini.model', 'gemini-1.5-flash');
         }
     }
@@ -159,9 +173,16 @@ class AiAdvisorService
                 'message' => 'Konfigurasi akademik tidak valid: ' . $e->getMessage(),
             ];
         } catch (\Exception $e) {
+            $errorMsg = $e->getMessage();
+            
+            // Helpful hint for the 404 error if using Gemini Native with OpenRouter key
+            if ($this->provider === 'gemini' && str_contains($errorMsg, '404') && str_starts_with($this->apiKey, 'sk-')) {
+                $errorMsg .= " (HINT: Anda mungkin menggunakan API Key OpenRouter pada provider Gemini Native. Silakan ganti AI_PROVIDER=openrouter)";
+            }
+
             return [
                 'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                'message' => 'Terjadi kesalahan: ' . $errorMsg,
             ];
         }
     }
@@ -511,6 +532,19 @@ class AiAdvisorService
     public function getGuards(): AdvisorGuards
     {
         return $this->guards;
+    }
+
+    /**
+     * Get current provider name for UI
+     */
+    public function getProviderName(): string
+    {
+        return match($this->provider) {
+            'openrouter' => 'OpenRouter (Gemini)',
+            'qwen' => 'Qwen AI',
+            'gemini' => 'Gemini Native',
+            default => ucfirst($this->provider)
+        };
     }
 
     /**

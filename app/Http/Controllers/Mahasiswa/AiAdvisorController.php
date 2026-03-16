@@ -28,8 +28,9 @@ class AiAdvisorController extends Controller
         }
 
         $mahasiswa->load(['user', 'prodi']);
+        $providerName = $this->aiService->getProviderName();
 
-        return view('mahasiswa.ai-advisor.index', compact('mahasiswa'));
+        return view('mahasiswa.ai-advisor.index', compact('mahasiswa', 'providerName'));
     }
 
     /**
