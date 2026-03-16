@@ -47,10 +47,13 @@
 | **KRS Online** | Pengisian Kartu Rencana Studi dengan validasi SKS otomatis |
 | **Transkrip Nilai** | Lihat transkrip akademik lengkap dengan IPK/IPS |
 | **KHS** | Kartu Hasil Studi per semester |
+| **Tagihan UKT** | Pembayaran UKT online terintegrasi dengan **Mayar** |
 | **Presensi** | Riwayat kehadiran per mata kuliah |
 | **Jadwal Kuliah** | Jadwal perkuliahan mingguan |
+| **Biodata** | Manajemen data profil dan informasi mahasiswa |
 | **E-Learning (LMS)** | Akses materi dan tugas kuliah |
 | **AI Academic Advisor** | Konsultasi akademik dengan AI Gemini |
+| **AI Reminder** | Pengingat tugas dan kegiatan otomatis berbasis AI |
 | **Skripsi** | Tracking progress skripsi dan bimbingan |
 | **Kerja Praktek** | Manajemen KP dan logbook |
 | **Export PDF** | Download transkrip dan KHS dalam format PDF |
@@ -72,6 +75,7 @@
 | **Dashboard** | Statistik dan overview akademik |
 | **Master Data** | Kelola Fakultas, Prodi, Mata Kuliah, Kelas |
 | **User Management** | Kelola akun Dosen dan Mahasiswa |
+| **Tagihan UKT** | Manajemen tagihan dan monitoring pembayaran (Mayar) |
 | **KRS Approval** | Monitoring dan approval KRS (view only) |
 | **Skripsi & KP** | Assign pembimbing dan update status |
 | **Ruangan** | Manajemen ruang kuliah |
@@ -114,7 +118,8 @@
 ### AI Integration
 | Technology | Description |
 |------------|-------------|
-| **Google Gemini API** | AI Academic Advisor |
+| **Google Gemini API** | AI Academic Advisor & Smart Reminders |
+| **Mayar API** | Integrated Payment Gateway for UKT |
 
 ---
 
@@ -207,6 +212,12 @@ DB_CONNECTION=sqlite
 ```env
 # Get your API key at: https://aistudio.google.com/
 GEMINI_API_KEY=your_gemini_api_key
+
+#### Payment Gateway (Mayar)
+```env
+MAYAR_API_KEY=your_mayar_api_key
+MAYAR_ENVIRONMENT=sandbox # or production
+```
 ```
 
 #### Cache & Session (Production)
