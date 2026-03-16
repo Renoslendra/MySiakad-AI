@@ -32,7 +32,11 @@
             </div>
 
             <div class="w-full max-w-[400px] mx-auto">
-                {{ $slot }}
+                @isset($slot)
+                    {{ $slot }}
+                @else
+                    @yield('content')
+                @endisset
             </div>
 
             <!-- Footer -->

@@ -31,12 +31,13 @@ class DatabaseSeeder extends Seeder
         // ==========================================
         // 1. SUPERADMIN
         // ==========================================
-        User::create([
+        $superAdmin = User::create([
             'name' => 'Super Administrator',
             'email' => 'superadmin@siakad.test',
             'password' => Hash::make('password'),
             'role' => 'superadmin',
         ]);
+        $superAdmin->assignRole('superadmin');
 
         // ==========================================
         // 2. TAHUN AKADEMIK
@@ -78,6 +79,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin_fakultas',
             'fakultas_id' => $fakultas->id,
         ]);
+        $adminFakultas->assignRole('admin_fakultas');
 
         // ==========================================
         // 4. PROGRAM STUDI
@@ -116,6 +118,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
             'role' => 'dosen',
         ]);
+        $dosenUser->assignRole('dosen');
 
         $dosen = Dosen::create([
             'user_id' => $dosenUser->id,
@@ -168,6 +171,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
             'role' => 'mahasiswa',
         ]);
+        $mahasiswaUser->assignRole('mahasiswa');
 
         $mahasiswa = Mahasiswa::create([
             'user_id' => $mahasiswaUser->id,
