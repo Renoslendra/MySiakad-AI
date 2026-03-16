@@ -26,7 +26,7 @@
 
 ## Overview
 
-**SIAKAD** (Sistem Informasi Akademik) adalah aplikasi manajemen akademik modern yang dirancang untuk universitas dan perguruan tinggi. Dibangun dengan Laravel 12 dan menggunakan arsitektur yang clean, scalable, dan production-ready.
+**SIAKAD** (Sistem Informasi Akademik) adalah aplikasi manajemen akademik modern yang dirancang untuk universitas dan perguruan tinggi. Dibangun dengan Laravel 12 dan menggunakan arsitektur yang clean, scalable, dan production-ready. Website : https://siakad.renoslendra.me/
 
 ### Highlights
 
