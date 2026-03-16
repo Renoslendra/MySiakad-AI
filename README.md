@@ -483,7 +483,7 @@ This project is open-sourced software licensed under the [MIT license](https://o
 
 ## Author
 
-Developed with ❤️ by Ryanda
+Developed with ❤️ by Renoslendra
 
 ---
 
